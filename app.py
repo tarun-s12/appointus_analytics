@@ -10,21 +10,20 @@ from sklearn.cluster import KMeans
 from sklearn.metrics import silhouette_score
 import matplotlib.pyplot as plt
 import seaborn as sns
+import networkx as nx
+from collections import defaultdict, Counter 
 
 nltk.download('vader_lexicon')
 
-# Database connection function
 def get_connection():
     return sqlite3.connect('appointus.db')
 
-# Load data function
 def load_data(query):
     conn = get_connection()
     data = pd.read_sql_query(query, conn)
     conn.close()
     return data
 
-# Perform sentiment analysis using VADER
 def analyze_sentiment_ml(comment):
     """
     Perform sentiment analysis using the VADER sentiment analyzer.
@@ -49,7 +48,6 @@ def analyze_sentiment_ml(comment):
         return "Neutral"
     
 def provide_insights(provider_id, cluster_model, scaler, cluster_summary, df, features):
-    # Scale the input data
     provider_data = df[df['ProviderID'] == provider_id][features].values[0]
     # Predict the cluster
     provider_scaled = scaler.transform([provider_data])
@@ -129,7 +127,8 @@ def clustering_analysis(provider_id):
 
 # Provider Visualization Page
 def show_provider_visualization(provider_id, provider_name):
-    st.header(f"Welcome, {provider_name}")
+    # st.header(f"Welcome, {provider_name}")
+    st.title("Welcome to Appointus Analytics Dashboard!")
 
     # Load provider-specific appointments
     appointments = load_data(f"""
@@ -306,10 +305,12 @@ def show_provider_visualization(provider_id, provider_name):
         # Optionally, you could also show a cluster analysis or heatmap (advanced) if your dataset includes enough geographic data
 
     if "Performance Improvement" in selected_analytics:
+        st.subheader("Performance Improvement Analysis")
         clustering_analysis(6)
 
 
 # Main App
+
 st.sidebar.title("Navigation")
 st.sidebar.subheader("Select Analytics")
 analytics_options = [
@@ -323,9 +324,9 @@ selected_analytics = st.sidebar.multiselect("Choose analytics to display:", anal
 
 selected_page = "Home"
 
+
 if selected_page == "Home":
-    st.title("Service Provider Dashboard")
-    provider_name = st.text_input("Enter Provider Name:")
+    provider_name = "Fix Speed Plumbers"
 
     if provider_name:
         providers = load_data("SELECT id, name FROM service_providers")
