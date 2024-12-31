@@ -326,7 +326,7 @@ selected_page = "Home"
 
 
 if selected_page == "Home":
-    provider_name = "Fix Speed Plumbers"
+    provider_name = "Crown Electrical Works"
 
     if provider_name:
         providers = load_data("SELECT id, name FROM service_providers")
